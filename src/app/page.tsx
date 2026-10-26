@@ -1,25 +1,37 @@
 import Image from 'next/image';
+
+import ProductCard, { type Product } from '@/components/ProductCard';
 export default async function Home() {
   const res = await fetch('https://fakestoreapi.com/products');
-  const products = await res.json();
+  if (!res.ok) {
+    throw new Error('Failed to fetch products');
+  }
+  const products: Product[] = await res.json();
   return (
-    <div className="grid gird-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      {products?.map(
-        (product: { title: string; image: string }, index: number) => {
-          return (
-            <div key={index}>
-              {product.title}
-              <Image
-                src={product.image}
-                alt="product image"
-                width={100}
-                height={100}
-              />
-            </div>
-          );
-        }
-      )}
-    </div>
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
+      <section className="mb-10 overflow-hidden rounded-2xl shadow-sm">
+        <Image
+          src="/img/shopora-banner.png"
+          alt="Shopora — Discover your style"
+          width={1920}
+          height={1080}
+          priority
+          className="h-[400px] w-full object-cover"
+          sizes="(max-width: 768px) 100vw, 1200px"
+        />
+      </section>
+
+      <h1 className="mb-8 text-3xl font-bold">
+        Our Products
+      </h1>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </main>
   );
 }
 
