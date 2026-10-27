@@ -7,14 +7,35 @@ export default function CartPage() {
   const { localData, setLocalData } = useProducts();
 
   const handleAdd = (product: Product) => {
-    const filterdElement = localData.filter((e: Product) => e.id == product.id);
-    if (product.amount) {
-      console.log({ ...product, amount: product.amount + 1 });
-    } else {
-      console.log({ ...product, amount: 2 });
-    }
-  };
-  const handleSub = () => {};
+  const updatedProducts = localData.map((item) =>
+    item.id === product.id
+      ? { ...item, amount: (item.amount ?? 1) + 1 }
+      : item
+  );
+
+  setLocalData(updatedProducts);
+  localStorage.setItem('products', JSON.stringify(updatedProducts));
+};
+
+    const handleSub = (product: Product) => {
+    const updatedProducts = localData.map((item) =>
+        item.id === product.id
+        ? { ...item, amount: Math.max(1, (item.amount ?? 1) - 1) }
+        : item
+    );
+
+    setLocalData(updatedProducts);
+    localStorage.setItem('products', JSON.stringify(updatedProducts));
+    };
+
+    const handleDelete = (product: Product) => {
+    const updatedProducts = localData.filter(
+        (item) => item.id !== product.id
+    );
+
+    setLocalData(updatedProducts);
+    localStorage.setItem('products', JSON.stringify(updatedProducts));
+    };
 
   return (
     <>
@@ -22,43 +43,66 @@ export default function CartPage() {
         return (
           <div
             key={product.id}
-            className="card bg-base-100 shadow-md rounded-2xl border border-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-          >
-            <figure className="px-5 pt-5">
-              <Image
+            className="flex flex-col gap-4 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm transition hover:shadow-md sm:flex-row sm:items-center">
+
+            <div className="flex h-28 w-full shrink-0 items-center justify-center rounded-xl bg-base-200 p-3 sm:w-28">
+                <Image
                 src={product.image}
                 alt={product.title}
-                width={220}
-                height={220}
-                className="h-48 w-full object-contain"
-              />
-            </figure>
+                width={100}
+                height={100}
+                className="h-full w-full object-contain"
+                />
+            </div>
 
-            <div className="card-body p-5">
-              <h2 className="card-title text-base font-semibold line-clamp-2 min-h-12">
+            <div className="min-w-0 flex-1">
+                <h2 className="line-clamp-2 font-semibold">
                 {product.title}
-              </h2>
+                </h2>
 
-              <p className="text-right text-xs text-base-content/60">
-                More from {product.category}
-              </p>
+                <p className="mt-1 text-sm text-base-content/60">
+                {product.category}
+                </p>
+
+                <p className="mt-2 font-bold text-primary">
+                ${product.price.toFixed(2)}
+                <span className="ml-1 text-xs font-normal text-base-content/60">
+                    / item
+                </span>
+                </p>
+
+                <p className="mt-1 text-sm">
+                Subtotal:{" "}
+                <span className="font-semibold">
+                    ${(product.price * (product.amount ?? 1)).toFixed(2)}
+                </span>
+                </p>
+            </div>
 
               <div className="card-actions justify-end mt-1">
                 <button
-                  className="btn btn-primary rounded-lg"
+                  className="btn btn-primary btn-sm rounded-lg"
                   onClick={() => handleAdd(product)}
                 >
                   +
                 </button>
+                <span className="text-base font-semibold min-w-6 text-center">
+                    {product.amount ?? 1}
+                </span>
                 <button
-                  className="btn btn-primary rounded-lg"
-                  onClick={handleSub}
+                className="btn btn-primary btn-sm rounded-lg"
+                onClick={() => handleSub(product)}
                 >
-                  -
+                −
+                </button>
+                <button
+                  className="btn btn-error btn-sm rounded-lg"
+                  onClick={() => handleDelete(product)}
+                >
+                  Delete
                 </button>
               </div>
             </div>
-          </div>
         );
       })}
     </>
