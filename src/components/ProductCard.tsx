@@ -14,7 +14,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     console.log('filteredEl');
     console.log(filteredEl);
     if (filteredEl.length > 0) {
-      throw new Error('already add the same product');
 
       return;
     }
@@ -23,11 +22,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       const localProducts = JSON.parse(storedProducts);
       localStorage.setItem(
         'products',
-        JSON.stringify([...localProducts, product])
+        JSON.stringify([
+            ...localProducts,
+            { ...product, amount: 1 },
+            ])
       );
       setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
     } else {
-      localStorage.setItem('products', JSON.stringify([product]));
+      localStorage.setItem('products', JSON.stringify([{ ...product, amount: 1 }]));
       setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
     }
   };
@@ -48,6 +50,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h2 className="card-title text-base font-semibold line-clamp-2 min-h-12">
           {product.title}
         </h2>
+
+        <p className="mt-2 text-lg font-bold text-primary">
+            ${product.price.toFixed(2)}
+        </p>
 
         <p className="text-right text-xs text-base-content/60">
           More from {product.category}
