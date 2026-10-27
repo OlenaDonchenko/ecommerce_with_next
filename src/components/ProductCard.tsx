@@ -1,20 +1,39 @@
-import Image from "next/image";
-
-export type Product = {
-    id: number;
-    title: string;
-    category: string;
-    price: number;
-    image: string;
-};
-
-type ProductCardProps = {
-    product: Product;
-};
+'use client';
+import { type MouseEvent } from 'react';
+import Image from 'next/image';
+import { type ProductCardProps } from '@/types/modelTypes';
+import { useProducts } from '@/context/ProductsContext';
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { localData, setLocalData } = useProducts();
+
+  const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
+    console.log(localData);
+    console.log(product.id);
+    const filteredEl = localData.filter((p) => p.id === product.id);
+    console.log('filteredEl');
+    console.log(filteredEl);
+    if (filteredEl.length > 0) {
+      throw new Error('already add the same product');
+
+      return;
+    }
+    const storedProducts = localStorage.getItem('products');
+    if (storedProducts) {
+      const localProducts = JSON.parse(storedProducts);
+      localStorage.setItem(
+        'products',
+        JSON.stringify([...localProducts, product])
+      );
+      setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
+    } else {
+      localStorage.setItem('products', JSON.stringify([product]));
+      setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
+    }
+  };
+
   return (
-    <article className="card bg-base-100 shadow-md rounded-2xl border border-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="card bg-base-100 shadow-md rounded-2xl border border-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <figure className="px-5 pt-5">
         <Image
           src={product.image}
@@ -35,11 +54,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <div className="card-actions justify-end mt-1">
-          <button className="btn btn-primary rounded-lg">
+          <button
+            className="btn btn-primary rounded-lg"
+            onClick={handleAddToCart}
+          >
             Add to cart
           </button>
         </div>
       </div>
-    </article>
+    </div>
   );
 }
