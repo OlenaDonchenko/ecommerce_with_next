@@ -54,14 +54,19 @@ export default function ProductCard({ product }: ProductCardProps) {
           More from {product.category}
         </p>
 
-        <div className="card-actions justify-end mt-1">
+        <div className="card-actions mt- 4 flex items-center justify-between gap-4">
           <button
-            className="btn btn-primary rounded-lg"
+            className="btn rounded-xl border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
             onClick={handleAddToCart}
           >
             Add to cart
           </button>
-          <Link href={`/${product.id}`}>See more</Link>
+          <Link href={`/${product.id}`} className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-primary transition-colors duration-200 hover:text-[#3D2BA8] group">
+            See more
+            <span className="transition-transform duration-200 group-hover:translate-x-1">
+            →
+            </span>
+          </Link>
         </div>
       </div>
     </div>

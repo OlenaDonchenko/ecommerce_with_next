@@ -20,7 +20,7 @@ const Nav = () => {
           Shopora
         </span>
       </div>
-      <div className="flex-none">
+      <div className="flex items-center gap-4">
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost hover:bg-[#F0EBFF] hover:text-[#5B43E8] transition-colors duration-200 btn-circle">
             <div className="indicator">
