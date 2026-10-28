@@ -6,10 +6,13 @@ import { Product } from '@/types/modelTypes';
 
 type Params = { params: Promise<{ id: string }> };
 
+// note address is not correct change it to suite your situation
+type ProductInfo = Product & { address: string };
+
 const ProductInfo = ({ params }: Params) => {
   const { id } = use(params);
   const { localData, setLocalData } = useProducts();
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ProductInfo | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
