@@ -1,20 +1,15 @@
 'use client';
-import { type MouseEvent } from 'react';
 import Image from 'next/image';
 import { type ProductCardProps } from '@/types/modelTypes';
 import { useProducts } from '@/context/ProductsContext';
+import Link from 'next/link';
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { localData, setLocalData } = useProducts();
 
-  const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
-    console.log(localData);
-    console.log(product.id);
+  const handleAddToCart = () => {
     const filteredEl = localData.filter((p) => p.id === product.id);
-    console.log('filteredEl');
-    console.log(filteredEl);
     if (filteredEl.length > 0) {
-
       return;
     }
     const storedProducts = localStorage.getItem('products');
@@ -22,14 +17,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       const localProducts = JSON.parse(storedProducts);
       localStorage.setItem(
         'products',
-        JSON.stringify([
-            ...localProducts,
-            { ...product, amount: 1 },
-            ])
+        JSON.stringify([...localProducts, { ...product, amount: 1 }])
       );
       setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
     } else {
-      localStorage.setItem('products', JSON.stringify([{ ...product, amount: 1 }]));
+      localStorage.setItem(
+        'products',
+        JSON.stringify([{ ...product, amount: 1 }])
+      );
       setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
     }
   };
@@ -52,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </h2>
 
         <p className="mt-2 text-lg font-bold text-primary">
-            ${product.price.toFixed(2)}
+          ${product.price.toFixed(2)}
         </p>
 
         <p className="text-right text-xs text-base-content/60">
@@ -66,6 +61,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             Add to cart
           </button>
+          <Link href={`/${product.id}`}>See more</Link>
         </div>
       </div>
     </div>
