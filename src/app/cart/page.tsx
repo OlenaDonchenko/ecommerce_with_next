@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProducts } from '@/context/ProductsContext';
 import { Product } from '@/types/modelTypes';
 import Image from 'next/image';
@@ -10,11 +10,28 @@ export default function CartPage() {
   const { localData, setLocalData } = useProducts();
 
   // sumPrice function
-  const sumPrice = () => {
+  const sumPrice = (products: Product[]) => {
+    const totalPrice = products.reduce(
+    (total, product) =>
+      total + product.price * (product.amount ?? 1),
+    0
+  );
+
+  setFullPrice(totalPrice);
+};
+
+
+  const totalItems = localData.reduce(
+  (total, product) => total + (product.amount ?? 1),
+  0
+);
+    useEffect(() => {
+      sumPrice(localData);
+    }, [localData]);
     // useLocalData to figure out the total price
     // reset price to be totalPrice
     // setFullPrice()
-  };
+
 
   const handleAdd = (product: Product) => {
     const updatedProducts = localData.map((item) =>
@@ -25,7 +42,7 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice();
+    sumPrice(updatedProducts);
   };
 
   const handleSub = (product: Product) => {
@@ -37,7 +54,7 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice();
+    sumPrice(updatedProducts);
   };
 
   const handleDelete = (product: Product) => {
@@ -45,12 +62,11 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice();
+    sumPrice(updatedProducts);
   };
 
   return (
-    <div>
-      {fullPrice}
+    <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-8">
 
       {localData.map((product) => {
         return (
@@ -92,7 +108,7 @@ export default function CartPage() {
 
             <div className="card-actions justify-end mt-1">
               <button
-                className="btn btn-primary btn-sm rounded-lg"
+                className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
                 onClick={() => handleAdd(product)}
               >
                 +
@@ -101,7 +117,7 @@ export default function CartPage() {
                 {product.amount ?? 1}
               </span>
               <button
-                className="btn btn-primary btn-sm rounded-lg"
+                className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
                 onClick={() => handleSub(product)}
               >
                 −
@@ -116,6 +132,21 @@ export default function CartPage() {
           </div>
         );
       })}
+      <div className="mt-8 flex justify-end">
+        <div className="w-full max-w-sm rounded-2xl border-2 border-[#8B5CF6] p-6 text-[#35205F] shadow-lg shadow-purple-200/50">
+            <p className="text-sm text-[#6D5A91]">
+            Total items: {totalItems}
+            </p>
+
+            <div className="mt-3 flex items-center justify-between gap-4">
+            <span className="text-lg font-semibold">Total price:</span>
+
+            <span className="text-2xl font-bold text-[#5B43E8]">
+                ${fullPrice.toFixed(2)}
+            </span>
+            </div>
+        </div>
+      </div>
     </div>
   );
 }
