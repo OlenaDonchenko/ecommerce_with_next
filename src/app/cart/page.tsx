@@ -1,32 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useProducts } from '@/context/ProductsContext';
 import { Product } from '@/types/modelTypes';
 import Image from 'next/image';
 export default function CartPage() {
-  const [fullPrice, setFullPrice] = useState(0);
-
   const { localData, setLocalData } = useProducts();
 
-  // sumPrice function
-  const sumPrice = (products: Product[]) => {
-    const totalPrice = products.reduce(
-      (total, product) => total + product.price * (product.amount ?? 1),
-      0
-    );
-    setFullPrice(totalPrice);
-  };
-
-  const totalItems = localData.reduce(
-    (total, product) => total + (product.amount ?? 1),
-    0
+  // derived from localData in a single pass, so no state/effect needed
+  const { fullPrice, totalItems } = localData.reduce(
+    (totals, product) => {
+      const amount = product.amount ?? 1;
+      totals.fullPrice += product.price * amount;
+      totals.totalItems += amount;
+      return totals;
+    },
+    { fullPrice: 0, totalItems: 0 }
   );
-
-  useEffect(() => () => sumPrice(localData), [localData]);
-  // useLocalData to figure out the total price
-  // reset price to be totalPrice
-  // setFullPrice()
 
   const handleAdd = (product: Product) => {
     const updatedProducts = localData.map((item) =>
@@ -37,7 +26,6 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice(updatedProducts);
   };
 
   const handleSub = (product: Product) => {
@@ -49,7 +37,6 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice(updatedProducts);
   };
 
   const handleDelete = (product: Product) => {
@@ -57,7 +44,6 @@ export default function CartPage() {
 
     setLocalData(updatedProducts);
     localStorage.setItem('products', JSON.stringify(updatedProducts));
-    sumPrice(updatedProducts);
   };
 
   return (
