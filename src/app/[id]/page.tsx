@@ -11,7 +11,15 @@ type ProductInfo = Product & { description: string };
 
 const ProductInfo = ({ params }: Params) => {
   const { id } = use(params);
-  const { handleAddToCart } = useProducts();
+  const {
+    handleAddToCart,
+    fullPrice,
+    handleAdd,
+    handleDelete,
+    handleSub,
+    localData,
+  } = useProducts();
+  const foundItem = localData.filter((e) => e.id === Number(id));
   const [product, setProduct] = useState<ProductInfo | null>(null);
 
   useEffect(() => {
@@ -29,6 +37,7 @@ const ProductInfo = ({ params }: Params) => {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <span> {fullPrice} </span>
       <div className="grid gap-8 overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-lg md:grid-cols-2">
         {/* Product image */}
         <div className="flex min-h-80 items-center justify-center bg-base-200 p-8 md:p-12">
@@ -62,15 +71,37 @@ const ProductInfo = ({ params }: Params) => {
           <p className="mt-3 leading-7 text-base-content/70">
             {product.description}
           </p>
-
-          <div className="mt-auto pt-8">
-            <button
-              className="btn w-full rounded-xl border-0 bg-[#5B43E8] text-base text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-              onClick={() => handleAddToCart(product)}
-            >
-              Add to cart
-            </button>
-          </div>
+          {foundItem.length > 0 ? (
+            <div>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleAdd(product)}
+              >
+                +
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleSub(product)}
+              >
+                -
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleDelete(product)}
+              >
+                remove
+              </button>
+            </div>
+          ) : (
+            <div className="mt-auto pt-8">
+              <button
+                className="btn w-full rounded-xl border-0 bg-[#5B43E8] text-base text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+                onClick={() => handleAddToCart(product)}
+              >
+                Add to cart
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </main>
