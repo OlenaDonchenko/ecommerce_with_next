@@ -5,7 +5,17 @@ import { useProducts } from '@/context/ProductsContext';
 import Link from 'next/link';
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { handleAddToCart } = useProducts();
+  const {
+  localData,
+  handleAddToCart,
+  handleAdd,
+  handleSub,
+  handleDelete,
+    } = useProducts();
+
+  const cartItem = localData.find(
+  (item) => item.id === product.id
+);
 
   return (
     <div className="card bg-base-100 shadow-md rounded-2xl border border-base-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -33,12 +43,37 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <div className="card-actions mt- 4 flex items-center justify-between gap-4">
-          <button
-            className="btn rounded-xl border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-            onClick={() => handleAddToCart(product)}
-          >
-            Add to cart
-          </button>
+            {cartItem ? (
+            <div className="flex items-center gap-2">
+                <button
+                className="btn btn-sm bg-[#5B43E8] text-white hover:bg-[#8B5CF6]"
+                onClick={() => handleSub(product)}>
+                −
+                </button>
+
+                <span className="font-semibold">
+                {cartItem.amount}
+                </span>
+
+                <button
+                className="btn btn-sm bg-[#5B43E8] text-white hover:bg-[#8B5CF6]"
+                onClick={() => handleAdd(product)}>
+                +
+                </button>
+
+                <button
+                className="btn btn-sm bg-[#5B43E8] text-white hover:bg-[#8B5CF6]"
+                onClick={() => handleDelete(product)}>
+                Remove
+                </button>
+            </div>
+            ) : (
+            <button
+                className="btn rounded-xl border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+                onClick={() => handleAddToCart(product)}>
+                Add to cart
+            </button>
+            )}
           <Link href={`/${product.id}`} className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-primary transition-colors duration-200 hover:text-[#3D2BA8] group">
             See more
             <span className="transition-transform duration-200 group-hover:translate-x-1">

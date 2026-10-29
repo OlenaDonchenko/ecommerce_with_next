@@ -72,7 +72,7 @@ const ProductInfo = ({ params }: Params) => {
             {product.description}
           </p>
           {foundItem.length > 0 ? (
-            <div>
+            <div className="mt-auto flex items-center p-4 gap-4">
               <button
                 className="btn btn-primary"
                 onClick={() => handleAdd(product)}
