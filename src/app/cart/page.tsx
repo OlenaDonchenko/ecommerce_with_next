@@ -12,26 +12,21 @@ export default function CartPage() {
   // sumPrice function
   const sumPrice = (products: Product[]) => {
     const totalPrice = products.reduce(
-    (total, product) =>
-      total + product.price * (product.amount ?? 1),
+      (total, product) => total + product.price * (product.amount ?? 1),
+      0
+    );
+    setFullPrice(totalPrice);
+  };
+
+  const totalItems = localData.reduce(
+    (total, product) => total + (product.amount ?? 1),
     0
   );
 
-  setFullPrice(totalPrice);
-};
-
-
-  const totalItems = localData.reduce(
-  (total, product) => total + (product.amount ?? 1),
-  0
-);
-    useEffect(() => {
-      sumPrice(localData);
-    }, [localData]);
-    // useLocalData to figure out the total price
-    // reset price to be totalPrice
-    // setFullPrice()
-
+  useEffect(() => () => sumPrice(localData), [localData]);
+  // useLocalData to figure out the total price
+  // reset price to be totalPrice
+  // setFullPrice()
 
   const handleAdd = (product: Product) => {
     const updatedProducts = localData.map((item) =>
@@ -67,7 +62,6 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-8">
-
       {localData.map((product) => {
         return (
           <div
@@ -134,17 +128,15 @@ export default function CartPage() {
       })}
       <div className="mt-8 flex justify-end">
         <div className="w-full max-w-sm rounded-2xl border-2 border-[#8B5CF6] p-6 text-[#35205F] shadow-lg shadow-purple-200/50">
-            <p className="text-sm text-[#6D5A91]">
-            Total items: {totalItems}
-            </p>
+          <p className="text-sm text-[#6D5A91]">Total items: {totalItems}</p>
 
-            <div className="mt-3 flex items-center justify-between gap-4">
+          <div className="mt-3 flex items-center justify-between gap-4">
             <span className="text-lg font-semibold">Total price:</span>
 
             <span className="text-2xl font-bold text-[#5B43E8]">
-                ${fullPrice.toFixed(2)}
+              ${fullPrice.toFixed(2)}
             </span>
-            </div>
+          </div>
         </div>
       </div>
     </div>
