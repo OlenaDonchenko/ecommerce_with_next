@@ -11,7 +11,7 @@ type ProductInfo = Product & { description: string };
 
 const ProductInfo = ({ params }: Params) => {
   const { id } = use(params);
-  const { localData, setLocalData } = useProducts();
+  const { handleAddToCart } = useProducts();
   const [product, setProduct] = useState<ProductInfo | null>(null);
 
   useEffect(() => {
@@ -23,36 +23,10 @@ const ProductInfo = ({ params }: Params) => {
     fetchProduct();
   }, [id]);
 
-  const handleAddToCart = () => {
-    if (!product) {
-      return;
-    }
-    const filteredEl = localData.filter((p) => p.id === product.id);
-    if (filteredEl.length > 0) {
-      return;
-    }
-    const storedProducts = localStorage.getItem('products');
-    if (storedProducts) {
-      const localProducts = JSON.parse(storedProducts);
-      localStorage.setItem(
-        'products',
-        JSON.stringify([...localProducts, { ...product, amount: 1 }])
-      );
-      setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
-    } else {
-      localStorage.setItem(
-        'products',
-        JSON.stringify([{ ...product, amount: 1 }])
-      );
-      setLocalData(JSON.parse(localStorage.getItem('products') ?? '[]'));
-    }
-  };
-
   if (!product) {
     return <div>no product</div>;
   }
 
-  
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid gap-8 overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-lg md:grid-cols-2">
@@ -92,7 +66,7 @@ const ProductInfo = ({ params }: Params) => {
           <div className="mt-auto pt-8">
             <button
               className="btn w-full rounded-xl border-0 bg-[#5B43E8] text-base text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart(product)}
             >
               Add to cart
             </button>

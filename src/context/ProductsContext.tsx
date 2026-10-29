@@ -2,18 +2,19 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   ReactNode,
-  SetStateAction,
-  Dispatch,
 } from 'react';
-import { type Product } from '@/types/modelTypes';
+import { type Product, type ProductContextType } from '@/types/modelTypes';
 
+import {
+  addProduct,
+  decrementAmount,
+  incrementAmount,
+  removeProduct,
+} from '@/utils/products';
 // describe values
-type ProductContextType = {
-  localData: Product[];
-  setLocalData: Dispatch<SetStateAction<Product[]>>;
-};
 
 const ProductsContext = createContext<ProductContextType | null>(null);
 
@@ -23,8 +24,43 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
     (localStorageProducts && JSON.parse(localStorageProducts)) || [];
   const [localData, setLocalData] = useState<Product[]>(parsedProducts);
 
+  // keep localStorage in sync with every cart change
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(localData));
+  }, [localData]);
+
+  const handleAddToCart = (product: Product) =>
+    setLocalData((prev) => addProduct(prev, product));
+  const handleAdd = (product: Product) =>
+    setLocalData((prev) => incrementAmount(prev, product.id));
+  const handleSub = (product: Product) =>
+    setLocalData((prev) => decrementAmount(prev, product.id));
+  const handleDelete = (product: Product) =>
+    setLocalData((prev) => removeProduct(prev, product.id));
+
+  const { fullPrice, totalItems } = localData.reduce(
+    (totals, product) => {
+      const amount = product.amount ?? 1;
+      totals.fullPrice += product.price * amount;
+      totals.totalItems += amount;
+      return totals;
+    },
+    { fullPrice: 0, totalItems: 0 }
+  );
+
   return (
-    <ProductsContext.Provider value={{ localData, setLocalData }}>
+    <ProductsContext.Provider
+      value={{
+        localData,
+        setLocalData,
+        fullPrice,
+        totalItems,
+        handleAddToCart,
+        handleAdd,
+        handleSub,
+        handleDelete,
+      }}
+    >
       {children}
     </ProductsContext.Provider>
   );

@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type Product = {
   id: number;
   title: string;
@@ -9,4 +11,15 @@ export type Product = {
 
 export type ProductCardProps = {
   product: Product;
+};
+
+export type ProductContextType = {
+  localData: Product[];
+  setLocalData: Dispatch<SetStateAction<Product[]>>;
+  fullPrice: number;
+  totalItems: number;
+  handleAddToCart: (product: Product) => void;
+  handleAdd: (product: Product) => void;
+  handleSub: (product: Product) => void;
+  handleDelete: (product: Product) => void;
 };

@@ -1,50 +1,16 @@
 'use client';
 
 import { useProducts } from '@/context/ProductsContext';
-import { Product } from '@/types/modelTypes';
 import Image from 'next/image';
 export default function CartPage() {
-  const { localData, setLocalData } = useProducts();
-
-  // derived from localData in a single pass, so no state/effect needed
-  const { fullPrice, totalItems } = localData.reduce(
-    (totals, product) => {
-      const amount = product.amount ?? 1;
-      totals.fullPrice += product.price * amount;
-      totals.totalItems += amount;
-      return totals;
-    },
-    { fullPrice: 0, totalItems: 0 }
-  );
-
-  const handleAdd = (product: Product) => {
-    const updatedProducts = localData.map((item) =>
-      item.id === product.id
-        ? { ...item, amount: (item.amount ?? 1) + 1 }
-        : item
-    );
-
-    setLocalData(updatedProducts);
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
-  };
-
-  const handleSub = (product: Product) => {
-    const updatedProducts = localData.map((item) =>
-      item.id === product.id
-        ? { ...item, amount: Math.max(1, (item.amount ?? 1) - 1) }
-        : item
-    );
-
-    setLocalData(updatedProducts);
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
-  };
-
-  const handleDelete = (product: Product) => {
-    const updatedProducts = localData.filter((item) => item.id !== product.id);
-
-    setLocalData(updatedProducts);
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
-  };
+  const {
+    localData,
+    fullPrice,
+    totalItems,
+    handleAdd,
+    handleSub,
+    handleDelete,
+  } = useProducts();
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-8">
