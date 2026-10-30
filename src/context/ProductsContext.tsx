@@ -38,14 +38,14 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
   const handleDelete = (product: Product) =>
     setLocalData((prev) => removeProduct(prev, product.id));
 
-  const { fullPrice, totalItems } = localData.reduce(
+  const { full, total } = localData.reduce(
     (totals, product) => {
       const amount = product.amount ?? 1;
-      totals.fullPrice += product.price * amount;
-      totals.totalItems += amount;
+      totals.full += product.price * amount;
+      totals.total += amount;
       return totals;
     },
-    { fullPrice: 0, totalItems: 0 }
+    { full: 0, total: 0 }
   );
 
   return (
@@ -53,8 +53,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       value={{
         localData,
         setLocalData,
-        fullPrice,
-        totalItems,
+        fullPrice: Number(full.toFixed(2)),
+        totalItems: Number(total.toFixed(2)),
         handleAddToCart,
         handleAdd,
         handleSub,

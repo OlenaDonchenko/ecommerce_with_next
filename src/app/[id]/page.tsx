@@ -61,7 +61,7 @@ const ProductInfo = ({ params }: Params) => {
           </h1>
 
           <p className="mt-5 text-3xl font-bold text-primary">
-            ${product.price.toFixed(2)}
+            ${product.price}
           </p>
 
           <div className="my-6 h-px bg-base-300" />

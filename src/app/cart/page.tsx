@@ -38,7 +38,7 @@ export default function CartPage() {
               </p>
 
               <p className="mt-2 font-bold text-primary">
-                ${product.price.toFixed(2)}
+                ${product.price}
                 <span className="ml-1 text-xs font-normal text-base-content/60">
                   / item
                 </span>
@@ -86,7 +86,7 @@ export default function CartPage() {
             <span className="text-lg font-semibold">Total price:</span>
 
             <span className="text-2xl font-bold text-[#5B43E8]">
-              ${fullPrice.toFixed(2)}
+              ${fullPrice}
             </span>
           </div>
         </div>

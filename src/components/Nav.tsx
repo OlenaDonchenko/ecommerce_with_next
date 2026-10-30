@@ -8,6 +8,7 @@ const Nav = () => {
 
   return (
     <div className="navbar bg-base-100 p-6 shadow-sm">
+      {fullPrice}
       <div className="flex-1">
         <Link
           className="btn btn-ghost hover:bg-[#F0EBFF] hover:text-[#5B43E8] transition-colors duration-200 text-xl"
