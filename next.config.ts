@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         hostname: "fakestoreapi.com",
         pathname: "/img/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.daisyui.com",
+        pathname: "/images/**",
+      },
     ],
   },
   turbopack: {
