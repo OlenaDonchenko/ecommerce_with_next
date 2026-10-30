@@ -1,43 +1,25 @@
-'use client';
-import { useState, useEffect, use } from 'react';
 import Image from 'next/image';
-import { useProducts } from '@/context/ProductsContext';
+import { notFound } from 'next/navigation';
 import { Product } from '@/types/modelTypes';
+import CartControls from '@/components/CartControls';
 
 type Params = { params: Promise<{ id: string }> };
 
-// note address is not correct change it to suite your situation
 type ProductInfo = Product & { description: string };
 
-const ProductInfo = ({ params }: Params) => {
-  const { id } = use(params);
-  const {
-    handleAddToCart,
-    fullPrice,
-    handleAdd,
-    handleDelete,
-    handleSub,
-    localData,
-  } = useProducts();
-  const foundItem = localData.filter((e) => e.id === Number(id));
-  const [product, setProduct] = useState<ProductInfo | null>(null);
+const ProductInfo = async ({ params }: Params) => {
+  const { id } = await params;
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const res = await fetch(`https://fakestoreapi.com/products/${id}`);
-      const data = await res.json();
-      setProduct(data);
-    };
-    fetchProduct();
-  }, [id]);
-
-  if (!product) {
-    return <div>no product</div>;
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+  // fakestoreapi answers an unknown id with 200 and an empty body
+  const text = res.ok ? await res.text() : '';
+  if (!text) {
+    notFound();
   }
+  const product: ProductInfo = JSON.parse(text);
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <span> {fullPrice} </span>
       <div className="grid gap-8 overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-lg md:grid-cols-2">
         {/* Product image */}
         <div className="flex min-h-80 items-center justify-center bg-base-200 p-8 md:p-12">
@@ -71,37 +53,10 @@ const ProductInfo = ({ params }: Params) => {
           <p className="mt-3 leading-7 text-base-content/70">
             {product.description}
           </p>
-          {foundItem.length > 0 ? (
-            <div className="mt-auto flex items-center p-4 gap-4">
-              <button
-                className="btn btn-primary"
-                onClick={() => handleAdd(product)}
-              >
-                +
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => handleSub(product)}
-              >
-                -
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={() => handleDelete(product)}
-              >
-                remove
-              </button>
-            </div>
-          ) : (
-            <div className="mt-auto pt-8">
-              <button
-                className="btn w-full rounded-xl border-0 bg-[#5B43E8] text-base text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-                onClick={() => handleAddToCart(product)}
-              >
-                Add to cart
-              </button>
-            </div>
-          )}
+
+          <div className="mt-auto pt-8">
+            <CartControls product={product} fullWidth />
+          </div>
         </div>
       </div>
     </main>
