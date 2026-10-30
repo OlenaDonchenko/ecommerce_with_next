@@ -2,6 +2,7 @@
 
 import { useProducts } from '@/context/ProductsContext';
 import Image from 'next/image';
+import Link from 'next/link';
 export default function CartPage() {
   const {
     localData,
@@ -52,28 +53,39 @@ export default function CartPage() {
               </p>
             </div>
 
-            <div className="card-actions justify-end mt-1">
-              <button
-                className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-                onClick={() => handleAdd(product)}
-              >
-                +
-              </button>
-              <span className="text-base font-semibold min-w-6 text-center">
-                {product.amount ?? 1}
-              </span>
-              <button
-                className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
-                onClick={() => handleSub(product)}
-              >
-                −
-              </button>
-              <button
-                className="btn btn-error btn-sm rounded-lg"
-                onClick={() => handleDelete(product)}
-              >
-                Delete
-              </button>
+            <div className="flex flex-col items-end gap-4">
+                <div className="card-actions justify-end mt-1">
+                <button
+                    className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+                    onClick={() => handleAdd(product)}
+                >
+                    +
+                </button>
+                <span className="text-base font-semibold min-w-6 text-center">
+                    {product.amount ?? 1}
+                </span>
+                <button
+                    className="btn btn-sm rounded-lg border-0 bg-[#5B43E8] text-white shadow-md transition-all duration-300 ease-in-out hover:bg-[#8B5CF6] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+                    onClick={() => handleSub(product)}
+                >
+                    −
+                </button>
+                <button
+                    className="btn btn-error btn-sm rounded-lg"
+                    onClick={() => handleDelete(product)}
+                >
+                    Delete
+                </button>
+                </div>
+                <Link
+                    href={`/${product.id}`}
+                    className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-primary transition-colors duration-200 hover:text-[#3D2BA8] group"
+                    >
+                    See more
+                    <span className="transition-transform duration-200 group-hover:translate-x-1">
+                    →
+                    </span>
+                </Link>
             </div>
           </div>
         );

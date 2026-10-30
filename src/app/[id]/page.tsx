@@ -37,7 +37,7 @@ const ProductInfo = ({ params }: Params) => {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <span> {fullPrice} </span>
+      
       <div className="grid gap-8 overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-lg md:grid-cols-2">
         {/* Product image */}
         <div className="flex min-h-80 items-center justify-center bg-base-200 p-8 md:p-12">
